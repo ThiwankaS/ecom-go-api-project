@@ -3,3 +3,21 @@ GET http://localhost:8080/health
 
 ### Test Localhost /products API end point
 GET http://localhost:8080/products 
+
+### Test creating an order
+POST http://localhost:8080/orders
+Content-Type: application/json
+
+{
+    "customerId": 1,
+    "items": [
+        {
+            "productId": 1,
+            "quantity": 1
+        },
+        {
+            "productId": 2,
+            "quantity": 2
+        }
+    ]
+}

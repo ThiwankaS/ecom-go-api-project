@@ -1,4 +1,4 @@
-package products
+package orders
 
 import (
 	"log"
@@ -21,17 +21,23 @@ func NewHandler(service Service) *handler {
 	}
 }
 
-// ListProducts handles GET requests for the product catalog.
+// PlaceOrder handles GET requests for the product catalog.
 // It retrieves products from the service and returns them as a JSON array.
-func (h *handler) ListProducts(w http.ResponseWriter, r *http.Request) {
-	// r.Context() is passed to allow for request cancellation and timeouts
-	products, err := h.service.ListProducts(r.Context())
+func (h *handler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
+	var tempOrder CreateOrderItemParams
+	if err := json.Read(r, &tempOrder); err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	createdOrder, err := h.service.PlaceOrder(r.Context(), tempOrder)
 	if err != nil {
 		log.Println(err)
-		// We use a 500 status because this is a server-side failure
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	// internal/json helper ensures consistent response formatting
-	json.Write(w, http.StatusOK, products)
+	json.Write(w, http.StatusCreated, createdOrder)
 }
