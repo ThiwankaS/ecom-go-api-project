@@ -1,0 +1,5 @@
+### Test Localhost /health API end point
+GET http://localhost:8080/health
+
+### Test Localhost /products API end point
+GET http://localhost:8080/products 

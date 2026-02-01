@@ -1,8 +1,10 @@
 package products
 
 import (
-	"encoding/json"
+	"log"
 	"net/http"
+
+	"github.com/ThiwankaS/ecom-go-api-project/internal/json"
 )
 
 type handler struct {
@@ -17,10 +19,15 @@ func NewHandler(service Service) *handler {
 }
 
 func (h *handler) ListProducts(w http.ResponseWriter, r *http.Request) {
-	// call the ListProducts service
-	// return JSON in http response
+
+	err := h.service.ListProducts(r.Context())
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	products := []string{"Hello", "World"}
 
-	json.NewEncoder(w).Encode(products)
+	json.Write(w, http.StatusOK, products)
 }

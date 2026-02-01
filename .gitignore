@@ -8,3 +8,6 @@
 !go.sum
 !.gitignore
 !*.md
+!*.yaml
+!*.http
+!*.sql
