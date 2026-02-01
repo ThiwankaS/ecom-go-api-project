@@ -9,8 +9,8 @@ import (
 )
 
 type Querier interface {
-	ListAuthors(ctx context.Context) ([]Product, error)
 	ListProductById(ctx context.Context, id int64) (Product, error)
+	ListProducts(ctx context.Context) ([]Product, error)
 }
 
 var _ Querier = (*Queries)(nil)

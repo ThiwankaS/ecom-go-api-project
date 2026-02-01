@@ -1,4 +1,4 @@
--- name: ListAuthors :many
+-- name: ListProducts :many
 SELECT 
 * 
 FROM 

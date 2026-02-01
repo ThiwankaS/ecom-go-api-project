@@ -9,15 +9,36 @@ import (
 	"context"
 )
 
-const listAuthors = `-- name: ListAuthors :many
+const listProductById = `-- name: ListProductById :one
+SELECT
+id, name, price_in_centers, quantity, created_at
+FROM 
+products 
+WHERE id = $1
+`
+
+func (q *Queries) ListProductById(ctx context.Context, id int64) (Product, error) {
+	row := q.db.QueryRow(ctx, listProductById, id)
+	var i Product
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.PriceInCenters,
+		&i.Quantity,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const listProducts = `-- name: ListProducts :many
 SELECT 
 id, name, price_in_centers, quantity, created_at 
 FROM 
 products
 `
 
-func (q *Queries) ListAuthors(ctx context.Context) ([]Product, error) {
-	rows, err := q.db.Query(ctx, listAuthors)
+func (q *Queries) ListProducts(ctx context.Context) ([]Product, error) {
+	rows, err := q.db.Query(ctx, listProducts)
 	if err != nil {
 		return nil, err
 	}
@@ -40,25 +61,4 @@ func (q *Queries) ListAuthors(ctx context.Context) ([]Product, error) {
 		return nil, err
 	}
 	return items, nil
-}
-
-const listProductById = `-- name: ListProductById :one
-SELECT
-id, name, price_in_centers, quantity, created_at
-FROM 
-products 
-WHERE id = $1
-`
-
-func (q *Queries) ListProductById(ctx context.Context, id int64) (Product, error) {
-	row := q.db.QueryRow(ctx, listProductById, id)
-	var i Product
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.PriceInCenters,
-		&i.Quantity,
-		&i.CreatedAt,
-	)
-	return i, err
 }
