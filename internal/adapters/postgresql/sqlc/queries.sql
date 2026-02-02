@@ -20,3 +20,8 @@ INSERT INTO orders(
 INSERT INTO order_items (
     order_id, product_id, quantity, price_in_cents
 ) VALUES ($1, $2, $3, $4) RETURNING *;
+
+-- name: UpdateProductStock :exec
+UPDATE products
+SET quantity = quantity - $1
+WHERE id = $2;

@@ -55,7 +55,7 @@ func (q *Queries) CreateOrderItem(ctx context.Context, arg CreateOrderItemParams
 
 const listProductById = `-- name: ListProductById :one
 SELECT
-id, name, price_in_centers, quantity, created_at
+id, name, price_in_cents, quantity, created_at
 FROM 
 products 
 WHERE id = $1
@@ -67,7 +67,7 @@ func (q *Queries) ListProductById(ctx context.Context, id int64) (Product, error
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
-		&i.PriceInCenters,
+		&i.PriceInCents,
 		&i.Quantity,
 		&i.CreatedAt,
 	)
@@ -76,7 +76,7 @@ func (q *Queries) ListProductById(ctx context.Context, id int64) (Product, error
 
 const listProducts = `-- name: ListProducts :many
 SELECT 
-id, name, price_in_centers, quantity, created_at 
+id, name, price_in_cents, quantity, created_at 
 FROM 
 products
 `
@@ -93,7 +93,7 @@ func (q *Queries) ListProducts(ctx context.Context) ([]Product, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
-			&i.PriceInCenters,
+			&i.PriceInCents,
 			&i.Quantity,
 			&i.CreatedAt,
 		); err != nil {
@@ -105,4 +105,20 @@ func (q *Queries) ListProducts(ctx context.Context) ([]Product, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateProductStock = `-- name: UpdateProductStock :exec
+UPDATE products
+SET quantity = quantity - $1
+WHERE id = $2
+`
+
+type UpdateProductStockParams struct {
+	Quantity int32 `json:"quantity"`
+	ID       int64 `json:"id"`
+}
+
+func (q *Queries) UpdateProductStock(ctx context.Context, arg UpdateProductStockParams) error {
+	_, err := q.db.Exec(ctx, updateProductStock, arg.Quantity, arg.ID)
+	return err
 }

@@ -9,14 +9,14 @@ POST http://localhost:8080/orders
 Content-Type: application/json
 
 {
-    "customerId": 1,
+    "customerId": 2,
     "items": [
         {
-            "productId": 1,
-            "quantity": 1
+            "productId": 2,
+            "quantity": 10
         },
         {
-            "productId": 2,
+            "productId": 3,
             "quantity": 2
         }
     ]
